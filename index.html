@@ -1133,6 +1133,25 @@ footer {
 .ls-buy:hover{color:#e94e91}
 @media(max-width:420px){.lightstick-panel{padding:10px}.ls-image{width:90px;height:105px}.ls-product{gap:11px}.ls-details strong{font-size:16px}.ls-buy{font-size:10px}}
 
+
+/* DISCOGRAPHIE + pochettes d'albums */
+.discography-panel{margin:26px 0;padding:18px;border:1px solid rgba(255,255,255,.95);border-radius:24px;background:var(--lg-bg,rgba(255,255,255,.7));box-shadow:var(--lg-shadow,0 8px 24px rgba(255,105,168,.08))}
+.discography-intro{font-size:13px;color:var(--muted);line-height:1.5;margin:-5px 0 14px}
+.discography-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.discography-release{padding:10px;border-radius:16px;background:rgba(255,255,255,.72);border:1px solid var(--pink-light);min-width:0;display:flex;gap:11px;align-items:flex-start}
+.discography-cover{display:block;width:96px;aspect-ratio:1/1;object-fit:cover;flex:none;border-radius:10px;background:linear-gradient(135deg,#ffd8e8,#bde9c9);box-shadow:0 3px 10px #00000012}
+.discography-cover-placeholder{display:flex;align-items:center;justify-content:center;text-align:center;color:#5c9c70;font-weight:900;font-size:12px;overflow:hidden;overflow-wrap:anywhere;padding:5px}
+.discography-release-info{min-width:0;flex:1;padding-top:2px}
+.discography-release b{display:block;font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.discography-release small{display:block;margin-top:5px;color:var(--muted);font-size:11px;line-height:1.45}
+.discography-type{display:inline-block;margin-bottom:7px;padding:4px 8px;border-radius:999px;background:var(--green);color:#315c3d;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.discography-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.discography-links a{display:inline-block;padding:9px 12px;border-radius:999px;background:var(--pink-light);color:#b5316d;text-decoration:none;font-size:12px;font-weight:800}
+.discography-links a:hover{background:var(--pink);color:white}
+.discography-note{padding:12px;border-radius:14px;background:rgba(189,233,201,.42);font-size:12px;line-height:1.5;color:#315c3d}
+.discography-loading{font-size:12px;color:var(--muted);padding:10px 0}
+@media(max-width:600px){.discography-panel{padding:13px}.discography-list{grid-template-columns:1fr}.discography-cover{width:88px}}
+
 </style>
 </head>
 
@@ -7313,6 +7332,253 @@ function renderLightstickPanel(group) {
   return "<section class='lightstick-panel' aria-label='Lightstick officiel de "+group.name+"'><div class='ls-product'><img class='ls-image' loading='lazy' src='"+image+"' alt='Lightstick officiel de "+group.name+"'><div class='ls-details'><strong>"+info.name+"</strong><a class='ls-buy' href='"+info.url+"' target='_blank' rel='noopener noreferrer'>Voir le lightstick ↗</a></div></div></section>";
 }
 
+
+/* Discographies: sorties récentes et albums majeurs recoupés avec les pages officielles indiquées. */
+const DISCOGRAPHIES = {
+  "BLACKPINK": {
+    source:"https://ygfamily.com/en/artists/blackpink/discography",
+    releases:[
+      ["DEADLINE","Mini-album","27 fév. 2026"],["JUMP","Single digital","11 juil. 2025"],["BORN PINK","Album studio","16 sept. 2022"],["Pink Venom","Single de pré-sortie","19 août 2022"],["THE ALBUM","Album studio","2 oct. 2020"],["KILL THIS LOVE","Mini-album","5 avr. 2019"],["SQUARE UP","Mini-album","15 juin 2018"],["AS IF IT’S YOUR LAST","Single digital","22 juin 2017"],["SQUARE TWO","Single album","1 nov. 2016"],["SQUARE ONE","Single album","8 août 2016"]
+    ]
+  },
+  "XLOV": {
+    source:"https://kprofiles.com/xlov-discography/",
+    releases:[
+      ["i=!","3e mini-album","28 oct. 2026"],["I, God","2e mini-album","27 mai 2026"],["UXLXVE","1er mini-album","5 nov. 2025"],["I ONE","2e single album","13 juin 2025"],["I’mma Be","1er single album","7 janv. 2025"]
+    ]
+  },
+  "BTS": {
+    source:"https://bts.ibighit.com/eng/discography/",
+    releases:[
+      ["COME OVER","Album / sortie coréenne","12 juin 2026"],["ARIRANG","Album studio","20 mars 2026"],["Proof","Anthologie","10 juin 2022"],["BE","Album studio","20 nov. 2020"],["MAP OF THE SOUL : 7","Album studio","21 fév. 2020"],["MAP OF THE SOUL : PERSONA","Mini-album","12 avr. 2019"],["LOVE YOURSELF 結 ‘ANSWER’","Album de compilation","24 août 2018"],["LOVE YOURSELF 轉 ‘TEAR’","Album studio","18 mai 2018"],["LOVE YOURSELF 承 ‘HER’","Mini-album","18 sept. 2017"],["WINGS","Album studio","10 oct. 2016"],["The most beautiful moment in life: Young Forever","Album spécial","2 mai 2016"],["DARK & WILD","Album studio","20 août 2014"],["SKOOL LUV AFFAIR","Mini-album","12 fév. 2014"],["O!RUL8,2?","Mini-album","11 sept. 2013"],["2 COOL 4 SKOOL","Single album","12 juin 2013"]
+    ]
+  },
+  "ALLDAY PROJECT": {
+    source:"https://kpopdiscover.com/en/groups/allday-project/discography/",
+    releases:[
+      ["CRASH","EP","28 sept. 2026"],["I DON’T BARGAIN","Single promotionnel","9 mars 2026"],["ALLDAY PROJECT","EP","8 déc. 2025"],["ONE MORE TIME","Single digital","17 nov. 2025"],["WICKED (Diplo Remix)","Single remix","19 sept. 2025"],["FAMOUS","Single album","23 juin 2025"]
+    ]
+  },
+  "UNCHILD": {
+    source:"https://www.highup-ent.com/en/unchild/",
+    releases:[["We Are UNCHILD","Single album de début","21 avr. 2026"]]
+  },
+  "ILLIT": {
+    source:"https://illit-official.jp/discography",
+    releases:[
+      ["BREAK EVEN","5e mini-album","26 oct. 2026"],["MAMIHLAPINATAPAI","4e mini-album","30 avr. 2026"],["NOT CUTE ANYMORE","Single","24 nov. 2025"],["bomb","3e mini-album","16 juin 2025"],["I’LL LIKE YOU","2e mini-album","21 oct. 2024"],["SUPER REAL ME","1er mini-album","25 mars 2024"]
+    ]
+  },
+  "KiiiKiii": {
+    source:"https://www.starship-ent.com/musician/kiiikiii",
+    releases:[
+      ["WhyKiiiKiii","EP","10 août 2026"],["Delulu Pack","EP","26 janv. 2026"],["To Me From Me","Single digital","4 nov. 2025"],["DANCING ALONE","Single digital","6 août 2025"],["UNCUT GEM","1er EP","24 mars 2025"],["I DO ME","Single digital","24 fév. 2025"]
+    ]
+  },
+  "Stray Kids": {
+    source:"https://straykids.jype.com/discography",
+    releases:[
+      ["THIS & THAT","Sortie musicale","7 août 2026"],["SKZ-REPLAY 2026 Pt.1","Album / projet","1 août 2026"],["RUN IT","Single","24 juin 2026"],["Endless Sun","Single","13 mars 2026"],["DO IT","Sortie musicale","21 nov. 2025"],["KARMA","Album","22 août 2025"],["Hollow","Sortie japonaise","18 juin 2025"]
+    ]
+  },
+  "BABYMONSTER": {
+    source:"https://ygfamily.com/en/artists/babymonster/discography",
+    releases:[
+      ["DESERVE","Single digital","23 oct. 2026"],["SUGAR HONEY ICE TEA","Single digital","8 juin 2026"],["춤 (CHOOM)","3e mini-album","4 mai 2026"],["WE GO UP","2e mini-album","10 oct. 2025"],["HOT SAUCE","Single digital","1 juil. 2025"],["DRIP","1er album studio","1 nov. 2024"],["FOREVER","Single digital","1 juil. 2024"],["BABYMONS7ER","1er mini-album","1 avr. 2024"],["Stuck In The Middle","Single de pré-sortie","1 fév. 2024"],["BATTER UP","Single digital de début","27 nov. 2023"]
+    ]
+  },
+  "LE SSERAFIM": {
+    source:"https://www.le-sserafim.jp/discography",
+    releases:[
+      ["Made My Night","2e single japonais","11 sept. 2026"],["PUREFLOW pt.1","2e album studio","22 mai 2026"],["SPAGHETTI","Single","24 oct. 2025"],["HOT","5e mini-album","14 mars 2025"],["CRAZY","4e mini-album","30 août 2024"],["EASY","3e mini-album","19 fév. 2024"],["UNFORGIVEN","1er album studio","1 mai 2023"],["ANTIFRAGILE","2e mini-album","17 oct. 2022"],["FEARLESS","1er mini-album","2 mai 2022"]
+    ]
+  },
+  "TWICE": {
+    source:"https://twice.jype.com/discography",
+    releases:[
+      ["THIS IS FOR","Album","11 juil. 2025"],["STRATEGY","Mini-album","6 déc. 2024"],["abouTZU","Mini-album solo de Tzuyu","6 sept. 2024"],["NA","Mini-album solo de Nayeon","14 juin 2024"],["With YOU-th","Mini-album","23 fév. 2024"],["READY TO BE","Mini-album","10 mars 2023"],["BETWEEN 1&2","Mini-album","26 août 2022"],["Formula of Love: O+T=<3","Album studio","12 nov. 2021"]
+    ]
+  },
+  "XG": {
+    source:"https://xgalx.com/xg/discography/",
+    releases:[
+      ["XG 1st WORLD TOUR ‘The first HOWL’ Live","Album live","8 août 2025"],["MILLION PLACES","6e single","14 mai 2025"],["AWE","Mini-album","8 nov. 2024"],["WOKE UP","Single","21 mai 2024"],["NEW DNA","Mini-album","27 sept. 2023"],["SHOOTING STAR","Single","25 janv. 2023"],["MASCARA","Single","29 juin 2022"],["Tippy Toes","Single de début","18 mars 2022"]
+    ]
+  },
+  "SEVENTEEN": {
+    source:"https://www.pledis.co.kr/en/artist/detail/seventeen/discography/?albumType=ALL",
+    releases:[
+      ["HAPPY BURSTDAY","5e album studio","26 mai 2025"],["BEAM","Single album Hoshi x Woozi","10 mars 2025"],["TELEPARTY","Single album BSS","8 janv. 2025"],["SPILL THE FEELS","Mini-album","14 oct. 2024"],["17 IS RIGHT HERE","Best-of","29 avr. 2024"],["SEVENTEENTH HEAVEN","Mini-album","23 oct. 2023"],["FML","Mini-album","24 avr. 2023"]
+    ]
+  },
+  "aespa": {
+    source:"https://aespa-official.jp/category/discography/",
+    releases:[
+      ["Rich Man","Album","2025"],["Whiplash","Mini-album","21 oct. 2024"],["Armageddon","1er album studio","27 mai 2024"],["Drama","Mini-album","10 nov. 2023"],["MY WORLD","Mini-album","8 mai 2023"],["Girls","Mini-album","8 juil. 2022"],["Savage","Mini-album","5 oct. 2021"],["Next Level","Single","17 mai 2021"],["Black Mamba","Single de début","17 nov. 2020"]
+    ]
+  },
+  "KATSEYE": {
+    source:"https://katseye.world/",
+    releases:[
+      ["Wild","EP","14 août 2026"],["Beautiful Chaos","EP","27 juin 2025"],["SIS (Soft Is Strong)","EP de début","16 août 2024"]
+    ]
+  },
+  "ATEEZ": {
+    source:"https://ateez-official.jp/discography",
+    releases:[
+      ["BAD (Japanese Ver.)","Single japonais","29 juil. 2026"],["GOLDEN HOUR : Part.5","Mini-album","26 juin 2026"],["GOLDEN HOUR : Part.4","Mini-album","6 fév. 2026"],["Ashes to Light","Album japonais","17 sept. 2025"],["GOLDEN HOUR : Part.3","Mini-album","13 juin 2025"],["GOLDEN HOUR : Part.2","Mini-album","15 nov. 2024"],["GOLDEN HOUR : Part.1","Mini-album","31 mai 2024"],["THE WORLD EP.FIN : WILL","Album","1 déc. 2023"]
+    ]
+  },
+  "ENHYPEN": {
+    source:"https://enhypen-jp.weverse.io/discography",
+    releases:[
+      ["THE SIN : BLISS","8e mini-album","21 août 2026"],["THE SIN : VANISH","7e mini-album","16 janv. 2026"],["DESIRE : UNLEASH","6e mini-album","5 juin 2025"],["ROMANCE : UNTOLD -daydream-","Album repackage","11 nov. 2024"],["ROMANCE : UNTOLD","2e album studio","12 juil. 2024"],["ORANGE BLOOD","5e mini-album","17 nov. 2023"],["DARK BLOOD","4e mini-album","22 mai 2023"],["MANIFESTO : DAY 1","3e mini-album","4 juil. 2022"],["DIMENSION : ANSWER","Album repackage","10 janv. 2022"],["DIMENSION : DILEMMA","1er album studio","12 oct. 2021"],["BORDER : CARNIVAL","2e mini-album","26 avr. 2021"],["BORDER : DAY ONE","1er mini-album","30 nov. 2020"]
+    ]
+  },
+  "IVE": {
+    source:"https://www.starship-ent.com/musician/ive",
+    releases:[
+      ["Looks Can Kill","EP","26 oct. 2026"],["Lucid Dream","Album japonais","27 mai 2026"],["REVIVE+","2e album studio","23 fév. 2026"],["IVE SECRET","EP","25 août 2025"],["Be Alright","EP japonais","30 juil. 2025"],["IVE EMPATHY","EP","3 fév. 2025"],["IVE SWITCH","EP","29 avr. 2024"],["I’VE MINE","EP","13 oct. 2023"],["I’ve IVE","1er album studio","10 avr. 2023"],["After LIKE","Single album","22 août 2022"],["LOVE DIVE","Single album","5 avr. 2022"],["ELEVEN","Single album de début","1 déc. 2021"]
+    ]
+  },
+  "ITZY": {
+    source:"https://itzy.jype.com/discography",
+    releases:[
+      ["Motto","Sortie musicale","18 mai 2026"],["Ice Cream","Sortie musicale","23 mars 2026"],["TUNNEL VISION","Sortie musicale","10 nov. 2025"],["Girls Will Be Girls","Sortie musicale","9 juin 2025"],["AIR","Sortie musicale","10 mars 2025"],["GOLD","Mini-album","15 oct. 2024"],["BORN TO BE","Mini-album","8 janv. 2024"],["KILL MY DOUBT","Mini-album","31 juil. 2023"],["CHESHIRE","Mini-album","30 nov. 2022"],["CHECKMATE","Mini-album","15 juil. 2022"],["CRAZY IN LOVE","Album studio","24 sept. 2021"],["GUESS WHO","Mini-album","30 avr. 2021"],["Not Shy","Mini-album","17 août 2020"],["IT’z ME","Mini-album","9 mars 2020"],["IT’z ICY","Mini-album","29 juil. 2019"]
+    ]
+  },
+  "DAY6": {
+    source:"https://day6.jype.com/discography",
+    releases:[
+      ["YOUNGEST","Sortie musicale","27 juil. 2026"],["Unpiltered","Sortie musicale","30 mars 2026"],["Lovin’ the Christmas","Single","15 déc. 2025"],["The DECADE","Album","5 sept. 2025"],["Maybe Tomorrow","Single","7 mai 2025"],["Band Aid","EP","2 sept. 2024"],["Fourever","EP","18 mars 2024"],["The Book of Us: Negentropy","EP","19 avr. 2021"]
+    ]
+  },
+  "PLAVE": {
+    source:"https://plave-official.jp/discography",
+    releases:[
+      ["HYPERDRIVE","5e mini-album","13 oct. 2026"],["Flame (feat. milet)","Single japonais digital","3 sept. 2026"],["Caligo Pt.2","4e mini-album","13 avr. 2026"],["PLBBUU","2e single album","10 nov. 2025"],["かくれんぼ (Hide and Seek)","Single japonais","16 juin 2025"],["Caligo Pt.1","3e mini-album","3 fév. 2025"],["ASTERUM : 134-1","2e mini-album","26 fév. 2024"],["Asterum : The Shape of Things to Come","1er mini-album","24 août 2023"],["ASTERUM","1er single album","12 mars 2023"]
+    ]
+  },
+  "Hearts2Hearts": {
+    source:"https://www.universal-music.co.jp/hearts2hearts/discography/",
+    releases:[
+      ["Moonride","Single digital","9 sept. 2026"],["ICONIC HEART","Single japonais","12 août 2026"],["Lemon Tang","Sortie japonaise","3 juil. 2026"]
+    ]
+  },
+  "KISS OF LIFE": {
+    source:"https://musicbrainz.org/artist/cbe629e3-fbbd-4071-9e12-4c5074c2231b",
+    releases:[
+      ["SWEAT -JAPANESE EP-","EP japonais","2026"],["Who is she","Single","2026"],["BREAK IT","Single","2026"],["224","EP","2025"],["TOKYO MISSION START","EP japonais","2025"],["Lose Yourself","EP","15 oct. 2024"],["Midas Touch","Single","3 avr. 2024"],["Born to be XX","EP","8 nov. 2023"],["KISS OF LIFE","EP de début","5 juil. 2023"]
+    ]
+  }
+};
+
+function escapeDiscographyText(value) {
+  return String(value == null ? "" : value).replace(/[&<>"']/g, function(ch) {
+    return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch];
+  });
+}
+
+function renderDiscographyPanel(group) {
+  const data = DISCOGRAPHIES[group.name];
+  const safeName = escapeDiscographyText(group.name);
+  const spotify = "https://open.spotify.com/search/" + encodeURIComponent(group.name);
+  const youtube = "https://music.youtube.com/search?q=" + encodeURIComponent(group.name + " discography");
+  const apple = "https://music.apple.com/search?term=" + encodeURIComponent(group.name);
+  const googleDiscography = "https://www.google.com/search?q=" + encodeURIComponent(group.name + " official discography albums");
+  const kprofiles = "https://www.google.com/search?q=" + encodeURIComponent("site:kprofiles.com " + group.name + " discography");
+  const links = "<div class='discography-links'><a href='" + googleDiscography + "' target='_blank' rel='noopener noreferrer'>Site / sources de discographie ↗</a><a href='" + kprofiles + "' target='_blank' rel='noopener noreferrer'>KProfiles ↗</a><a href='" + spotify + "' target='_blank' rel='noopener noreferrer'>Spotify ↗</a><a href='" + apple + "' target='_blank' rel='noopener noreferrer'>Apple Music ↗</a><a href='" + youtube + "' target='_blank' rel='noopener noreferrer'>YouTube Music ↗</a></div>";
+  if (!data) {
+    return "<section class='discography-panel' data-discography-auto='" + safeName + "'><h3 class='members-heading'>Discographie</h3>" +
+      "<p class='discography-intro'>Les pochettes et albums disponibles seront recherchés automatiquement. Pour les fiches dont la liste n’a pas encore été vérifiée, les liens donnent accès aux discographies et aux sources à consulter.</p>" +
+      "<div class='discography-list discography-auto-list'><p class='discography-loading'>Recherche des albums et de leurs pochettes…</p></div>" + links + "</section>";
+  }
+  const rows = data.releases.map(function(r, i) {
+    const title = escapeDiscographyText(r[0]);
+    const type = escapeDiscographyText(r[1]);
+    const date = escapeDiscographyText(r[2]);
+    return "<article class='discography-release' data-cover-title='" + title + "' data-cover-group='" + safeName + "' data-cover-index='" + i + "'>" +
+      "<div class='discography-cover discography-cover-placeholder' aria-label='Pochette en cours de recherche'>" + title + "</div>" +
+      "<div class='discography-release-info'><span class='discography-type'>" + type + "</span><b>" + title + "</b><small>" + date + "</small></div></article>";
+  }).join("");
+  return "<section class='discography-panel' data-discography-known='" + safeName + "'><h3 class='members-heading'>Discographie</h3>" +
+    "<p class='discography-intro'>Sélection de sorties classées de la plus récente à la plus ancienne. Les pochettes sont récupérées depuis le catalogue Apple Music lorsqu’elles sont disponibles ; un résultat absent ne signifie pas que l’album n’existe pas.</p>" +
+    "<div class='discography-list'>" + rows + "</div>" + links + "<p class='discography-note'>La liste déjà renseignée est une sélection, pas toujours une discographie exhaustive. Les liens permettent de vérifier les sorties manquantes.</p></section>";
+}
+
+/* Recherche les pochettes au moment où une fiche est ouverte, pour éviter d'alourdir le fichier HTML. */
+const discographyCoverCache = {};
+function normalizeCoverTitle(value) {
+  return String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+}
+function getAppleAlbums(term, limit) {
+  const url = "https://itunes.apple.com/search?entity=album&media=music&limit=" + (limit || 12) + "&term=" + encodeURIComponent(term);
+  return fetch(url).then(function(response) { if (!response.ok) throw new Error("catalogue indisponible"); return response.json(); })
+    .then(function(json) { return Array.isArray(json.results) ? json.results : []; });
+}
+function setCoverImage(container, src, alt) {
+  if (!container || !src) return;
+  const img = document.createElement("img");
+  img.className = "discography-cover";
+  img.loading = "lazy";
+  img.alt = "Pochette de " + (alt || "album");
+  img.src = src.replace(/100x100bb\./, "300x300bb.");
+  img.onerror = function() { img.replaceWith(makeCoverPlaceholder(alt)); };
+  container.replaceWith(img);
+}
+function makeCoverPlaceholder(title) {
+  const el = document.createElement("div");
+  el.className = "discography-cover discography-cover-placeholder";
+  el.textContent = title || "Pochette indisponible";
+  el.setAttribute("aria-label", "Pochette indisponible dans le catalogue automatique");
+  return el;
+}
+function loadDiscographyCovers(root) {
+  if (!root) return;
+  root.querySelectorAll("[data-discography-known]").forEach(function(panel) {
+    const artist = panel.getAttribute("data-discography-known");
+    const cards = Array.from(panel.querySelectorAll(".discography-release[data-cover-title]"));
+    // Une seule requête par artiste, puis rapprochement des titres pour limiter les appels au catalogue.
+    getAppleAlbums(artist, 200).then(function(results) {
+      cards.forEach(function(card) {
+        const title = card.getAttribute("data-cover-title");
+        const cacheKey = artist + "::" + title;
+        const placeholder = card.querySelector(".discography-cover-placeholder");
+        if (discographyCoverCache[cacheKey]) { setCoverImage(placeholder, discographyCoverCache[cacheKey], title); return; }
+        const wanted = normalizeCoverTitle(title);
+        let best = results.find(function(item) { return normalizeCoverTitle(item.collectionName) === wanted; });
+        if (!best) best = results.find(function(item) { const got = normalizeCoverTitle(item.collectionName); return got && (got.includes(wanted) || wanted.includes(got)); });
+        if (best && best.artworkUrl100) { discographyCoverCache[cacheKey] = best.artworkUrl100; setCoverImage(placeholder, best.artworkUrl100, title); }
+        else if (placeholder) placeholder.textContent = title;
+      });
+    }).catch(function() {
+      cards.forEach(function(card) { const placeholder = card.querySelector(".discography-cover-placeholder"); if (placeholder) placeholder.textContent = card.getAttribute("data-cover-title"); });
+    });
+  });
+  root.querySelectorAll("[data-discography-auto]").forEach(function(panel) {
+    const artist = panel.getAttribute("data-discography-auto");
+    const grid = panel.querySelector(".discography-auto-list");
+    if (!grid || grid.dataset.loaded === "true") return;
+    grid.dataset.loaded = "true";
+    getAppleAlbums(artist, 18).then(function(results) {
+      const seen = new Set();
+      const albums = results.filter(function(item) {
+        const key = normalizeCoverTitle(item.collectionName);
+        if (!key || seen.has(key)) return false;
+        seen.add(key); return true;
+      }).slice(0, 12);
+      if (!albums.length) { grid.innerHTML = "<p class='discography-loading'>Aucune pochette trouvée automatiquement. Utilise les liens de recherche ci-dessous pour consulter la discographie.</p>"; return; }
+      grid.innerHTML = albums.map(function(item) {
+        const name = escapeDiscographyText(item.collectionName || "Album");
+        const date = item.releaseDate ? escapeDiscographyText(item.releaseDate.slice(0, 4)) : "";
+        const cover = escapeDiscographyText((item.artworkUrl100 || "").replace(/100x100bb\./, "300x300bb."));
+        const link = escapeDiscographyText(item.collectionViewUrl || apple);
+        return "<article class='discography-release'><a href='" + link + "' target='_blank' rel='noopener noreferrer' aria-label='Ouvrir " + name + "'><img class='discography-cover' loading='lazy' src='" + cover + "' alt='Pochette de " + name + "'></a><div class='discography-release-info'><b>" + name + "</b><small>" + date + "</small><small>Apple Music</small></div></article>";
+      }).join("");
+    }).catch(function() { grid.innerHTML = "<p class='discography-loading'>Le catalogue automatique n’est pas accessible pour le moment. Les liens ci-dessous permettent de chercher les pochettes et les sorties.</p>"; });
+  });
+}
+
 function renderGroupPage(group, groupIndex) {
     if (group.name === "BTS") scheduleBtsIntro();
     if (group.name === "Stray Kids") scheduleSkzIntro();
@@ -7355,6 +7621,7 @@ function renderGroupPage(group, groupIndex) {
                 "<div class='info-line'><b>Nom du fandom :</b> " + group.fandomName + "</div>" +
                 renderLightstickPanel(group) +
                 (group.note ? "<div class='info-line' style='border:none; background:var(--pink-light); border-radius:14px; padding:12px; margin-top:10px;'>" + group.note + "</div>" : "") +
+                renderDiscographyPanel(group) +
                 "<h3 class='members-heading'>Réseaux officiels</h3>" +
                 socialLines +
                 "<h3 class='members-heading'>Membres (touche une carte pour voir sa fiche)</h3>" +
@@ -7551,6 +7818,7 @@ function openGroupPage(gi) {
     currentGroupIdx = -1;
     const group = groupsData[gi];
     resultText.innerHTML = renderGroupPage(group, gi);
+    loadDiscographyCovers(resultText);
     showResults();
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -7567,6 +7835,7 @@ function renderMatches(matches, emptyMessage) {
     if (matches.length === 1) {
         const onlyIndex = groupsData.indexOf(matches[0]);
         resultText.innerHTML = renderGroupPage(matches[0], onlyIndex);
+        loadDiscographyCovers(resultText);
         return;
     }
 
