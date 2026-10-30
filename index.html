@@ -1314,6 +1314,56 @@ body { position:relative; }
   .ibase-halloween-spider,.ibase-halloween-corner,.ibase-spooky-flyer{animation-duration:.01ms!important}
 }
 </style>
+
+<style id="ibase-auth-voting-styles">
+.ibase-account-trigger{border:0;border-radius:999px;padding:11px 18px;background:var(--pink);color:#fff;font-weight:800;cursor:pointer;white-space:nowrap}
+.ibase-account-trigger:hover{background:#ed4e91}
+.ibase-auth-backdrop{position:fixed;inset:0;z-index:100000;background:rgba(30,15,25,.38);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px}
+.ibase-auth-backdrop.open{display:flex}
+.ibase-auth-card{width:min(440px,100%);max-height:90vh;overflow:auto;padding:26px;border-radius:28px;background:rgba(255,255,255,.94);border:1px solid #fff;box-shadow:0 24px 80px rgba(0,0,0,.2)}
+.ibase-auth-card h2{color:var(--pink);font-size:25px;margin:0 0 8px}
+.ibase-auth-card p{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 16px}
+.ibase-auth-card label{display:block;font-size:12px;font-weight:800;color:#555;margin:13px 0 6px}
+.ibase-auth-card input{width:100%;border:1px solid #f3c4d8;border-radius:13px;padding:13px 14px;font-size:15px;background:#fff;outline:none}
+.ibase-auth-card input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,105,168,.12)}
+.ibase-auth-actions{display:flex;gap:9px;margin-top:17px}
+.ibase-auth-actions button,.ibase-auth-close{border:0;border-radius:999px;padding:12px 16px;font-weight:800;cursor:pointer}
+.ibase-auth-actions button{flex:1;background:var(--pink);color:#fff}
+.ibase-auth-actions button.secondary{background:var(--pink-light);color:#b5316d}
+.ibase-auth-close{float:right;background:#f5f5f5;color:#555}
+.ibase-auth-status{min-height:20px;margin-top:12px!important;color:#b5316d!important;font-weight:700}
+.ibase-vote-control{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:3px;padding:4px 6px;border:1px solid var(--pink-light);border-radius:14px;background:#fff;z-index:4}
+.ibase-vote-control button{width:27px;height:30px;border:0;border-radius:9px;background:transparent;color:var(--pink);font-size:17px;font-weight:900;line-height:1;cursor:pointer}
+.ibase-vote-control button.active{background:var(--pink);color:#fff}
+.ibase-vote-control .ibase-vote-count{min-width:20px;text-align:center;font-size:12px;font-weight:900;color:#333;font-variant-numeric:tabular-nums}
+.member-row{padding-right:112px}
+@media(max-width:750px){header{gap:10px}.ibase-account-trigger{font-size:12px;padding:9px 13px}.ibase-vote-control{right:7px;gap:0;padding:3px}.ibase-vote-control button{width:25px}}
+.ibase-auth-card{width:min(520px,100%)}
+.ibase-profile-editor{margin-top:14px;padding-top:14px;border-top:1px solid #f2d8e4}
+.ibase-profile-editor h3,.ibase-community h3{margin:0 0 10px;color:var(--pink);font-size:19px}
+.ibase-profile-preview{display:flex;align-items:center;gap:12px;margin:10px 0}
+.ibase-profile-avatar{width:54px;height:54px;object-fit:cover;border-radius:50%;background:#ffe2ef;border:2px solid #ffc1dc}
+.ibase-profile-editor input[type=file]{font-size:12px;padding:8px}
+.ibase-community{margin:38px 0 18px;padding:clamp(18px,3vw,28px);border:1px solid rgba(220,95,151,.2);border-radius:24px;background:linear-gradient(145deg,#fffafd 0%,#fff3f8 100%);box-shadow:0 12px 34px rgba(91,35,65,.07);color:#302630}
+.ibase-community h3{display:flex;align-items:center;gap:10px;margin:0 0 7px;font-size:clamp(19px,2.2vw,24px);letter-spacing:-.02em}
+.ibase-community h3:before{content:'✦';display:grid;place-items:center;width:34px;height:34px;border-radius:12px;background:#f8dce9;color:#b84d7e;font-size:17px}
+.ibase-community-list{display:grid;gap:12px;margin:18px 0 20px}
+.ibase-comment{display:flex;align-items:flex-start;gap:12px;padding:15px 16px;border-radius:17px;background:rgba(255,255,255,.94);border:1px solid #f2e1e9;box-shadow:0 4px 14px rgba(75,35,55,.035)}
+.ibase-comment img{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#f8e3ed;flex:none;border:2px solid #fff;box-shadow:0 0 0 1px #f0d4e1}
+.ibase-comment-body{min-width:0;flex:1}
+.ibase-comment-meta{font-size:12px;font-weight:700;color:#a05c7b;margin:1px 0 7px}
+.ibase-comment-text{white-space:pre-wrap;overflow-wrap:anywhere;color:#352d33;font-size:14px;line-height:1.65}
+.ibase-comment-delete{border:0;background:transparent;color:#b34b78;cursor:pointer;font-size:12px;font-weight:700;margin-top:8px;padding:3px 0}
+.ibase-comment-form{display:grid;gap:10px;padding:15px;border:1px solid #f0d8e4;border-radius:18px;background:rgba(255,255,255,.72)}
+.ibase-comment-form textarea{box-sizing:border-box;width:100%;min-height:94px;resize:vertical;border:1px solid #ead2de;border-radius:14px;padding:13px 15px;font:inherit;font-size:14px;line-height:1.5;background:#fff;color:#302630;outline:none;transition:border-color .2s,box-shadow .2s}
+.ibase-comment-form textarea:focus{border-color:#d879a2;box-shadow:0 0 0 3px rgba(216,121,162,.14)}
+.ibase-comment-form button,.ibase-profile-save{justify-self:start;border:0;border-radius:999px;padding:11px 19px;background:var(--pink);color:#fff;font-weight:800;cursor:pointer;transition:transform .15s,filter .15s}
+.ibase-comment-form button:hover,.ibase-profile-save:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.ibase-community-note{font-size:13px;line-height:1.5;color:#927d89;margin:0}
+.ibase-community-empty{font-size:13px;color:#927d89;padding:14px 2px}
+@media(max-width:600px){.ibase-community{padding:15px;border-radius:18px}.ibase-comment{padding:12px}.ibase-comment img{width:36px;height:36px}.ibase-comment-form{padding:11px}}
+</style>
+
 </head>
 
 <body>
@@ -1330,7 +1380,41 @@ body { position:relative; }
         <a href="#about">About</a>
         <a href="#creator" id="creatorLink">Réseaux</a>
     </nav>
+    <button type="button" class="ibase-account-trigger" id="ibaseAccountOpen">Connexion</button>
 </header>
+
+
+<div class="ibase-auth-backdrop" id="ibaseAuthBackdrop" aria-hidden="true">
+  <div class="ibase-auth-card" role="dialog" aria-modal="true" aria-labelledby="ibaseAuthTitle">
+    <button type="button" class="ibase-auth-close" id="ibaseAuthClose">Fermer ✕</button>
+    <h2 id="ibaseAuthTitle">Compte IBASE</h2>
+    <p id="ibaseAuthIntro">Connecte-toi pour voter pour tes bias. Ton compte restera connecté sur cet appareil.</p>
+    <div id="ibaseAuthForm">
+      <label for="ibaseAuthEmail">Adresse e-mail (identifiant)</label>
+      <input id="ibaseAuthEmail" type="email" autocomplete="username" placeholder="ton@email.com">
+      <label for="ibaseAuthPassword">Mot de passe</label>
+      <input id="ibaseAuthPassword" type="password" autocomplete="current-password" placeholder="Au moins 6 caractères">
+      <div class="ibase-auth-actions">
+        <button type="button" id="ibaseLoginBtn">Se connecter</button>
+        <button type="button" class="secondary" id="ibaseSignupBtn">Créer un compte</button>
+      </div>
+    </div>
+    <div id="ibaseLoggedPanel" style="display:none">
+      <p id="ibaseLoggedEmail"></p>
+      <div class="ibase-profile-editor">
+        <h3>Mon profil IBASE</h3>
+        <div class="ibase-profile-preview"><img id="ibaseAvatarPreview" class="ibase-profile-avatar" alt="Photo de profil"><div><strong id="ibaseProfileNamePreview">Mon profil</strong><p class="ibase-community-note">Personnalise ton pseudo et ta photo.</p></div></div>
+        <label for="ibaseProfileName">Pseudo</label>
+        <input id="ibaseProfileName" type="text" maxlength="24" placeholder="Ex. MinaStar">
+        <label for="ibaseAvatarFile">Photo de profil</label>
+        <input id="ibaseAvatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+        <div class="ibase-auth-actions"><button type="button" id="ibaseProfileSave">Enregistrer mon profil</button></div>
+      </div>
+      <div class="ibase-auth-actions"><button type="button" class="secondary" id="ibaseLogoutBtn">Se déconnecter</button></div>
+    </div>
+    <p class="ibase-auth-status" id="ibaseAuthStatus" role="status"></p>
+  </div>
+</div>
 
 <main>
 
@@ -8207,6 +8291,7 @@ function renderGroupPage(group, groupIndex) {
                 "<h3 class='members-heading'>" + uiText("members") + " (touche une carte pour voir sa fiche)</h3>" +
                 (showBiasVotes ? "<div class='bias-note'>" + uiText("biasHelp") + "</div>" : "") +
                 memberRows +
+                "<section class='ibase-community' data-community-group='" + group.name.replace(/&/g, "&amp;").replace(/'/g, "&#39;") + "'><h3>Discussion · " + group.name + "</h3><p class='ibase-community-note'>Partage ton avis avec les autres fans. Reste respectueux.</p><div class='ibase-community-list' data-comment-list><div class='ibase-community-empty'>Chargement des commentaires…</div></div><div class='ibase-comment-form'><textarea data-comment-input maxlength='1000' placeholder='Écris un commentaire…'></textarea><button type='button' data-comment-submit>Publier le commentaire</button><div class='ibase-community-note' data-comment-status></div></div></section>" +
             "</div>" +
         "</div>";
 }
@@ -9473,6 +9558,305 @@ document.head.appendChild(style);
     },true);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
+
+<!-- IBASE: real accounts and shared bias voting.
+     Configure SUPABASE_URL and SUPABASE_ANON_KEY below after creating a Supabase project.
+     Never put a service_role key in a public GitHub Pages site. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  "use strict";
+
+  const SUPABASE_URL = "https://xqlxobclmokjfserxbuh.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_ivNWAUZoMGF2zD2dgwOHRg_WSbMKgZi";
+  const configured = SUPABASE_URL.startsWith("https://") &&
+    !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
+
+  const backdrop = document.getElementById("ibaseAuthBackdrop");
+  const openBtn = document.getElementById("ibaseAccountOpen");
+  const closeBtn = document.getElementById("ibaseAuthClose");
+  const statusEl = document.getElementById("ibaseAuthStatus");
+  const formEl = document.getElementById("ibaseAuthForm");
+  const loggedPanel = document.getElementById("ibaseLoggedPanel");
+  const loggedEmail = document.getElementById("ibaseLoggedEmail");
+  const intro = document.getElementById("ibaseAuthIntro");
+  const emailEl = document.getElementById("ibaseAuthEmail");
+  const passwordEl = document.getElementById("ibaseAuthPassword");
+
+  let client = null;
+  let currentUser = null;
+  let voteCounts = Object.create(null);
+  let myVotes = Object.create(null);
+  let voteBusy = false;
+
+  function openAuth(message){
+    backdrop.classList.add("open");
+    backdrop.setAttribute("aria-hidden","false");
+    statusEl.textContent = message || "";
+    if(currentUser){
+      formEl.style.display = "none";
+      loggedPanel.style.display = "block";
+      loggedEmail.textContent = "Connecté avec : " + currentUser.email;
+      intro.textContent = "Ton compte IBASE est connecté. Modifie ton pseudo et ta photo, vote et participe aux discussions.";
+    }else{
+      formEl.style.display = "block";
+      loggedPanel.style.display = "none";
+      intro.textContent = configured
+        ? "Connecte-toi ou crée un compte pour voter. Ta session restera active sur cet appareil."
+        : "Le système de compte doit encore être relié à ton projet Supabase. Les votes ne seront activés qu'après cette configuration.";
+    }
+  }
+  function closeAuth(){
+    backdrop.classList.remove("open");
+    backdrop.setAttribute("aria-hidden","true");
+  }
+  openBtn.addEventListener("click",function(){openAuth();});
+  closeBtn.addEventListener("click",closeAuth);
+  backdrop.addEventListener("click",function(e){if(e.target===backdrop)closeAuth();});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeAuth();});
+
+  function setStatus(message){statusEl.textContent=message||"";}
+  function voteKey(group,member){return group+"::"+member;}
+  function esc(v){return String(v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+
+  async function refreshVotes(){
+    if(!client){return;}
+    const all = await client.from("bias_votes").select("group_name,member_name,value");
+    if(all.error){console.error("IBASE votes:",all.error);return;}
+    voteCounts = Object.create(null);
+    (all.data||[]).forEach(function(v){
+      const k=voteKey(v.group_name,v.member_name);
+      voteCounts[k]=(voteCounts[k]||0)+Number(v.value||0);
+    });
+    myVotes = Object.create(null);
+    if(currentUser){
+      const mine=await client.from("bias_votes").select("group_name,member_name,value").eq("user_id",currentUser.id);
+      if(mine.error){console.error("IBASE own votes:",mine.error);}
+      else (mine.data||[]).forEach(function(v){myVotes[voteKey(v.group_name,v.member_name)]=Number(v.value);});
+    }
+  }
+  function score(group,member){return Number(voteCounts[voteKey(group.name,member.name)]||0);}
+  function biasButton(group,member){
+    const k=voteKey(group.name,member.name), mine=myVotes[k]||0, n=score(group,member);
+    return "<div class='ibase-vote-control' aria-label='Votes pour "+esc(member.name)+"'>"+
+      "<button type='button' data-bias-direction='1' class='"+(mine===1?"active":"")+"' aria-label='Voter pour "+esc(member.name)+"' title='Voter pour'>▲</button>"+
+      "<span class='ibase-vote-count'>"+n+"</span>"+
+      "<button type='button' data-bias-direction='-1' class='"+(mine===-1?"active":"")+"' aria-label='Voter contre "+esc(member.name)+"' title='Voter contre'>▼</button>"+
+      "</div>";
+  }
+
+  // Override the original local-only vote helpers. Counts are shared by all visitors.
+  window.biasScore = score;
+  window.biasVoteButton = biasButton;
+  window.sortedMemberEntries = function(group){
+    return group.members.map(function(m,i){return {m:m,i:i};})
+      .sort(function(a,b){return score(group,b.m)-score(group,a.m)||a.i-b.i;});
+  };
+
+  async function submitVote(group,member,direction){
+    if(!client){openAuth("Les votes nécessitent la configuration Supabase dans ce fichier.");return;}
+    if(!currentUser){openAuth("Connecte-toi pour voter pour ton bias.");return;}
+    if(voteBusy)return;
+    voteBusy=true;
+    try{
+      const key=voteKey(group.name,member.name), previous=myVotes[key]||0;
+      let result;
+      if(previous===direction){
+        result=await client.from("bias_votes").delete()
+          .eq("user_id",currentUser.id).eq("group_name",group.name).eq("member_name",member.name);
+      }else{
+        result=await client.from("bias_votes").upsert({
+          user_id:currentUser.id,group_name:group.name,member_name:member.name,value:direction
+        },{onConflict:"user_id,group_name,member_name"});
+      }
+      if(result.error)throw result.error;
+      await refreshVotes();
+      const gi=groupsData.indexOf(group), y=window.scrollY;
+      resultText.innerHTML=renderGroupPage(group,gi);
+      window.scrollTo(0,y);
+    }catch(err){
+      console.error(err);
+      openAuth("Impossible d'enregistrer le vote : "+(err.message||"erreur inconnue"));
+    }finally{voteBusy=false;}
+  }
+
+  // Capture the click before the old localStorage-only handler can run.
+  document.addEventListener("click",function(event){
+    const button=event.target.closest("[data-bias-direction]");
+    if(!button)return;
+    const row=button.closest(".member-row");
+    if(!row)return;
+    event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
+    const group=groupsData[Number(row.dataset.group)];
+    const member=group&&group.members[Number(row.dataset.member)];
+    if(group&&member)submitVote(group,member,Number(button.dataset.biasDirection));
+  },true);
+
+  async function authAction(mode){
+    if(!client){setStatus("Configuration nécessaire : ajoute l'URL et la clé publique Supabase dans le code.");return;}
+    const email=emailEl.value.trim(), password=passwordEl.value;
+    if(!email||!password){setStatus("Entre ton adresse e-mail et ton mot de passe.");return;}
+    if(password.length<6){setStatus("Le mot de passe doit contenir au moins 6 caractères.");return;}
+    setStatus(mode==="signup"?"Création du compte…":"Connexion…");
+    const result=mode==="signup"
+      ? await client.auth.signUp({email,password})
+      : await client.auth.signInWithPassword({email,password});
+    if(result.error){setStatus(result.error.message);return;}
+    if(mode==="signup"&&!result.data.session){
+      setStatus("Compte créé ! Vérifie ton e-mail pour confirmer l'inscription, puis connecte-toi.");
+    }else{
+      setStatus("Connexion réussie !");
+      closeAuth();
+    }
+  }
+  document.getElementById("ibaseLoginBtn").addEventListener("click",function(){authAction("login");});
+  document.getElementById("ibaseSignupBtn").addEventListener("click",function(){authAction("signup");});
+  document.getElementById("ibaseLogoutBtn").addEventListener("click",async function(){
+    if(!client)return;
+    const r=await client.auth.signOut();
+    if(r.error){setStatus(r.error.message);return;}
+    setStatus("Déconnecté.");
+  });
+
+  // Community: persistent member profiles, avatar uploads, and per-group comments.
+  const profileNameEl=document.getElementById("ibaseProfileName");
+  const avatarFileEl=document.getElementById("ibaseAvatarFile");
+  const avatarPreview=document.getElementById("ibaseAvatarPreview");
+  const profileNamePreview=document.getElementById("ibaseProfileNamePreview");
+  let currentProfile=null;
+  const fallbackAvatar="data:image/svg+xml;charset=UTF-8,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' rx='40' fill='#ffe2ef'/><text x='50%' y='57%' text-anchor='middle' font-size='38' fill='#d94b91'>✦</text></svg>");
+  function setProfilePreview(profile){
+    currentProfile=profile||{};
+    const name=currentProfile.username||((currentUser&&currentUser.email)||"Membre IBASE").split("@")[0];
+    if(profileNameEl)profileNameEl.value=currentProfile.username||"";
+    if(profileNamePreview)profileNamePreview.textContent="@"+name;
+    if(avatarPreview)avatarPreview.src=currentProfile.avatar_url||fallbackAvatar;
+  }
+  async function loadProfile(){
+    if(!client||!currentUser)return;
+    const r=await client.from("ibase_profiles").select("username,avatar_url").eq("user_id",currentUser.id).maybeSingle();
+    if(r.error){console.warn("IBASE profile:",r.error);setProfilePreview({});return;}
+    setProfilePreview(r.data||{});
+    if(r.data&&r.data.username)openBtn.textContent="@"+r.data.username;
+  }
+  document.getElementById("ibaseProfileSave").addEventListener("click",async function(){
+    if(!client||!currentUser){setStatus("Connecte-toi pour modifier ton profil.");return;}
+    const username=(profileNameEl.value||"").trim();
+    if(username.length<2||username.length>24||!/^[\p{L}\p{N}_ .-]+$/u.test(username)){setStatus("Choisis un pseudo de 2 à 24 caractères (lettres, chiffres, espace, _ . -).",true);return;}
+    setStatus("Enregistrement du profil…");
+    try{
+      let avatar_url=currentProfile&&currentProfile.avatar_url||null;
+      const file=avatarFileEl.files&&avatarFileEl.files[0];
+      if(file){
+        if(file.size>3*1024*1024)throw new Error("La photo doit faire moins de 3 Mo.");
+        if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type))throw new Error("Format accepté : JPG, PNG, WEBP ou GIF.");
+        const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
+        const path=currentUser.id+"/avatar."+ext;
+        const up=await client.storage.from("ibase-avatars").upload(path,file,{upsert:true,contentType:file.type,cacheControl:"3600"});
+        if(up.error)throw up.error;
+        avatar_url=client.storage.from("ibase-avatars").getPublicUrl(path).data.publicUrl;
+      }
+      const saved=await client.from("ibase_profiles").upsert({user_id:currentUser.id,username:username,avatar_url:avatar_url,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+      if(saved.error)throw saved.error;
+      setProfilePreview({username:username,avatar_url:avatar_url});
+      avatarFileEl.value="";setStatus("Ton profil a été enregistré !");
+      openBtn.textContent="@"+username;
+    }catch(err){console.error(err);setStatus("Erreur profil : "+(err.message||"vérifie la configuration SQL et le stockage."));}
+  });
+  if(avatarFileEl)avatarFileEl.addEventListener("change",function(){const f=avatarFileEl.files&&avatarFileEl.files[0];if(f&&f.size<=3*1024*1024){avatarPreview.src=URL.createObjectURL(f);}});
+
+  function formatCommentDate(value){try{return new Intl.DateTimeFormat("fr-FR",{dateStyle:"short",timeStyle:"short"}).format(new Date(value));}catch(e){return "";}}
+  async function loadGroupComments(panel){
+    if(!client||!panel)return;
+    const groupName=panel.getAttribute("data-community-group");
+    const list=panel.querySelector("[data-comment-list]");
+    if(!list)return;
+    const r=await client.from("ibase_comments").select("id,user_id,content,created_at").eq("group_name",groupName).order("created_at",{ascending:false}).limit(100);
+    if(r.error){list.innerHTML="<div class='ibase-community-empty'>Impossible de charger les commentaires. Vérifie le SQL Supabase.</div>";console.warn(r.error);return;}
+    const ids=[...new Set((r.data||[]).map(x=>x.user_id))];
+    let profiles={};
+    if(ids.length){const pr=await client.from("ibase_profiles").select("user_id,username,avatar_url").in("user_id",ids);if(!pr.error)(pr.data||[]).forEach(x=>profiles[x.user_id]=x);}
+    list.innerHTML=(r.data||[]).map(c=>{
+      const pr=profiles[c.user_id]||{};const username=pr.username||"Membre IBASE";const avatar=pr.avatar_url||fallbackAvatar;
+      return "<article class='ibase-comment'><img src='"+esc(avatar)+"' alt=''><div class='ibase-comment-body'><div class='ibase-comment-meta'><strong>"+esc(username)+"</strong> · "+esc(formatCommentDate(c.created_at))+"</div><div class='ibase-comment-text'>"+esc(c.content)+"</div>"+(currentUser&&currentUser.id===c.user_id?"<button class='ibase-comment-delete' type='button' data-comment-delete='"+esc(c.id)+"'>Supprimer</button>":"")+"</div></article>";
+    }).join("")||"<div class='ibase-community-empty'>Aucun commentaire pour le moment. Lance la discussion !</div>";
+    const status=panel.querySelector("[data-comment-status]");
+    if(status)status.textContent=currentUser?"":"Connecte-toi pour publier un commentaire.";
+  }
+  async function refreshVisibleComments(){document.querySelectorAll("[data-community-group]").forEach(loadGroupComments);}
+  document.addEventListener("click",async function(event){
+    const submit=event.target.closest("[data-comment-submit]");
+    const del=event.target.closest("[data-comment-delete]");
+    if(submit){
+      const panel=submit.closest("[data-community-group]"),input=panel&&panel.querySelector("[data-comment-input]"),status=panel&&panel.querySelector("[data-comment-status]"),content=(input&&input.value||"").trim();
+      if(!client||!currentUser){openAuth("Connecte-toi pour commenter les groupes.");return;}
+      if(!content){if(status)status.textContent="Écris un commentaire avant de publier.";return;}
+      submit.disabled=true;if(status)status.textContent="Publication…";
+      const result=await client.from("ibase_comments").insert({user_id:currentUser.id,group_name:panel.getAttribute("data-community-group"),content:content});
+      submit.disabled=false;
+      if(result.error){if(status)status.textContent="Erreur : "+result.error.message;return;}
+      input.value="";if(status)status.textContent="Commentaire publié !";await loadGroupComments(panel);
+    }
+    if(del){
+      if(!client||!currentUser)return;
+      const panel=del.closest("[data-community-group]");
+      const result=await client.from("ibase_comments").delete().eq("id",del.getAttribute("data-comment-delete")).eq("user_id",currentUser.id);
+      if(result.error){console.warn(result.error);return;}await loadGroupComments(panel);
+    }
+  });
+  const communityObserver=new MutationObserver(function(){document.querySelectorAll("[data-community-group]:not([data-community-loaded])").forEach(function(panel){panel.setAttribute("data-community-loaded","1");loadGroupComments(panel);});});
+  communityObserver.observe(document.getElementById("resultText")||document.body,{childList:true,subtree:true});
+
+  // Explicitly pin the two newest group entries requested, rather than relying on array tail order.
+  window.renderGroupGrid = function(){
+    const grid=document.getElementById("groupGrid");
+    if(!grid)return;
+    const wanted=["Red Velvet","Aooo"];
+    const selected=wanted.map(function(name){return groupsData.find(function(g){return g.name===name;});}).filter(Boolean);
+    grid.innerHTML=selected.map(function(group){
+      const index=groupsData.indexOf(group);
+      return "<article class='group-banner' data-open-group='"+index+"'>"+
+        "<img class='group-bg' src='"+group.bannerImg+"' alt='"+esc(group.name)+"'>"+
+        "<div class='group-overlay'></div>"+
+        (typeof isFavGroup==="function"&&isFavGroup(group)?"<span class='fav-star banner-star'>★</span>":"")+
+        (group.logoImg?"<div class='hero-logo-badge'"+(group.logoBg?" style='background:"+group.logoBg+"'":"")+"><img src='"+group.logoImg+"' alt='"+esc(group.name)+" logo'></div>":"")+
+        "<div class='group-content'><div class='group-badge'>"+group.subcategories.join(" · ").toUpperCase()+" · "+group.category+"</div>"+
+        (group.logoImg?"":"<h2 style='color:white'>"+esc(group.name)+"</h2>")+
+        "<div class='group-members-row'>"+group.members.map(function(m){return "<span>"+esc(m.name)+(typeof statusBadge==="function"?statusBadge(m):"")+"</span>";}).join("")+"</div></div></article>";
+    }).join("");
+  };
+  window.renderGroupGrid();
+
+  if(configured && window.supabase && window.supabase.createClient){
+    client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{
+      auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+    });
+    window.ibaseSupabase=client;
+    client.auth.getSession().then(async function(r){
+      currentUser=r.data&&r.data.session?r.data.session.user:null;
+      openBtn.textContent=currentUser?"Mon compte":"Connexion";
+      await refreshVotes();
+      if(currentUser)await loadProfile();
+    });
+    client.auth.onAuthStateChange(function(_event,session){
+      currentUser=session?session.user:null;
+      openBtn.textContent=currentUser?"Mon compte":"Connexion";
+      if(currentUser)loadProfile();else setProfilePreview({});
+      refreshVotes().then(function(){
+        if(document.querySelector(".profile-page")&&typeof currentGroupIdx!=="undefined"&&currentGroupIdx>=0){
+          const g=groupsData[currentGroupIdx], y=window.scrollY;
+          if(g){resultText.innerHTML=renderGroupPage(g,currentGroupIdx);window.scrollTo(0,y);}
+        }
+        refreshVisibleComments();
+      });
+    });
+  }else{
+    openBtn.textContent="Connexion";
+    console.warn("IBASE: configure SUPABASE_URL et SUPABASE_ANON_KEY pour activer les comptes et les votes partagés.");
+  }
 })();
 </script>
 
