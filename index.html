@@ -1338,6 +1338,22 @@ body { position:relative; }
 .ibase-vote-control .ibase-vote-count{min-width:20px;text-align:center;font-size:12px;font-weight:900;color:#333;font-variant-numeric:tabular-nums}
 .member-row{padding-right:112px}
 @media(max-width:750px){header{gap:10px}.ibase-account-trigger{font-size:12px;padding:9px 13px}.ibase-vote-control{right:7px;gap:0;padding:3px}.ibase-vote-control button{width:25px}}
+.ibase-auth-card{width:min(520px,100%)}
+.ibase-profile-editor{margin-top:14px;padding-top:14px;border-top:1px solid #f2d8e4}
+.ibase-profile-editor h3,.ibase-community h3{margin:0 0 10px;color:var(--pink);font-size:19px}
+.ibase-profile-preview{display:flex;align-items:center;gap:12px;margin:10px 0}
+.ibase-profile-avatar{width:54px;height:54px;object-fit:cover;border-radius:50%;background:#ffe2ef;border:2px solid #ffc1dc}
+.ibase-profile-editor input[type=file]{font-size:12px;padding:8px}
+.ibase-community{margin:34px 0 12px;padding:20px;border:1px solid #f4c5da;border-radius:20px;background:rgba(255,245,250,.8)}
+.ibase-community-list{display:grid;gap:12px;margin:14px 0}
+.ibase-comment{display:flex;gap:10px;padding:12px;border-radius:14px;background:#fff;border:1px solid #f6e1eb}
+.ibase-comment img{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#ffe2ef;flex:none}
+.ibase-comment-body{min-width:0;flex:1}.ibase-comment-meta{font-size:12px;color:#888;margin-bottom:5px}.ibase-comment-text{white-space:pre-wrap;overflow-wrap:anywhere;color:#333;font-size:14px}
+.ibase-comment-delete{border:0;background:transparent;color:#b5316d;cursor:pointer;font-size:12px;margin-top:6px}
+.ibase-comment-form{display:grid;gap:8px}.ibase-comment-form textarea{width:100%;min-height:82px;resize:vertical;border:1px solid #efbfd3;border-radius:13px;padding:12px;font:inherit;background:#fff}
+.ibase-comment-form button,.ibase-profile-save{border:0;border-radius:999px;padding:11px 17px;background:var(--pink);color:#fff;font-weight:800;cursor:pointer}
+.ibase-community-note{font-size:13px;color:#888}.ibase-community-empty{font-size:13px;color:#888;padding:12px 0}
+@media(max-width:600px){.ibase-community{padding:14px}}
 </style>
 
 </head>
@@ -1377,6 +1393,15 @@ body { position:relative; }
     </div>
     <div id="ibaseLoggedPanel" style="display:none">
       <p id="ibaseLoggedEmail"></p>
+      <div class="ibase-profile-editor">
+        <h3>Mon profil IBASE</h3>
+        <div class="ibase-profile-preview"><img id="ibaseAvatarPreview" class="ibase-profile-avatar" alt="Photo de profil"><div><strong id="ibaseProfileNamePreview">Mon profil</strong><p class="ibase-community-note">Personnalise ton pseudo et ta photo.</p></div></div>
+        <label for="ibaseProfileName">Pseudo</label>
+        <input id="ibaseProfileName" type="text" maxlength="24" placeholder="Ex. MinaStar">
+        <label for="ibaseAvatarFile">Photo de profil</label>
+        <input id="ibaseAvatarFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+        <div class="ibase-auth-actions"><button type="button" id="ibaseProfileSave">Enregistrer mon profil</button></div>
+      </div>
       <div class="ibase-auth-actions"><button type="button" class="secondary" id="ibaseLogoutBtn">Se déconnecter</button></div>
     </div>
     <p class="ibase-auth-status" id="ibaseAuthStatus" role="status"></p>
@@ -8258,6 +8283,7 @@ function renderGroupPage(group, groupIndex) {
                 "<h3 class='members-heading'>" + uiText("members") + " (touche une carte pour voir sa fiche)</h3>" +
                 (showBiasVotes ? "<div class='bias-note'>" + uiText("biasHelp") + "</div>" : "") +
                 memberRows +
+                "<section class='ibase-community' data-community-group='" + group.name.replace(/&/g, "&amp;").replace(/'/g, "&#39;") + "'><h3>Discussion · " + group.name + "</h3><p class='ibase-community-note'>Partage ton avis avec les autres fans. Reste respectueux.</p><div class='ibase-community-list' data-comment-list><div class='ibase-community-empty'>Chargement des commentaires…</div></div><div class='ibase-comment-form'><textarea data-comment-input maxlength='1000' placeholder='Écris un commentaire…'></textarea><button type='button' data-comment-submit>Publier le commentaire</button><div class='ibase-community-note' data-comment-status></div></div></section>" +
             "</div>" +
         "</div>";
 }
@@ -9566,7 +9592,7 @@ document.head.appendChild(style);
       formEl.style.display = "none";
       loggedPanel.style.display = "block";
       loggedEmail.textContent = "Connecté avec : " + currentUser.email;
-      intro.textContent = "Ton compte IBASE est connecté. Tu peux voter pour les membres.";
+      intro.textContent = "Ton compte IBASE est connecté. Modifie ton pseudo et ta photo, vote et participe aux discussions.";
     }else{
       formEl.style.display = "block";
       loggedPanel.style.display = "none";
@@ -9687,6 +9713,95 @@ document.head.appendChild(style);
     setStatus("Déconnecté.");
   });
 
+  // Community: persistent member profiles, avatar uploads, and per-group comments.
+  const profileNameEl=document.getElementById("ibaseProfileName");
+  const avatarFileEl=document.getElementById("ibaseAvatarFile");
+  const avatarPreview=document.getElementById("ibaseAvatarPreview");
+  const profileNamePreview=document.getElementById("ibaseProfileNamePreview");
+  let currentProfile=null;
+  const fallbackAvatar="data:image/svg+xml;charset=UTF-8,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' rx='40' fill='#ffe2ef'/><text x='50%' y='57%' text-anchor='middle' font-size='38' fill='#d94b91'>✦</text></svg>");
+  function setProfilePreview(profile){
+    currentProfile=profile||{};
+    const name=currentProfile.username||((currentUser&&currentUser.email)||"Membre IBASE").split("@")[0];
+    if(profileNameEl)profileNameEl.value=currentProfile.username||"";
+    if(profileNamePreview)profileNamePreview.textContent="@"+name;
+    if(avatarPreview)avatarPreview.src=currentProfile.avatar_url||fallbackAvatar;
+  }
+  async function loadProfile(){
+    if(!client||!currentUser)return;
+    const r=await client.from("ibase_profiles").select("username,avatar_url").eq("user_id",currentUser.id).maybeSingle();
+    if(r.error){console.warn("IBASE profile:",r.error);setProfilePreview({});return;}
+    setProfilePreview(r.data||{});
+    if(r.data&&r.data.username)openBtn.textContent="@"+r.data.username;
+  }
+  document.getElementById("ibaseProfileSave").addEventListener("click",async function(){
+    if(!client||!currentUser){setStatus("Connecte-toi pour modifier ton profil.");return;}
+    const username=(profileNameEl.value||"").trim();
+    if(username.length<2||username.length>24||!/^[\p{L}\p{N}_ .-]+$/u.test(username)){setStatus("Choisis un pseudo de 2 à 24 caractères (lettres, chiffres, espace, _ . -).",true);return;}
+    setStatus("Enregistrement du profil…");
+    try{
+      let avatar_url=currentProfile&&currentProfile.avatar_url||null;
+      const file=avatarFileEl.files&&avatarFileEl.files[0];
+      if(file){
+        if(file.size>3*1024*1024)throw new Error("La photo doit faire moins de 3 Mo.");
+        if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type))throw new Error("Format accepté : JPG, PNG, WEBP ou GIF.");
+        const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
+        const path=currentUser.id+"/avatar."+ext;
+        const up=await client.storage.from("ibase-avatars").upload(path,file,{upsert:true,contentType:file.type,cacheControl:"3600"});
+        if(up.error)throw up.error;
+        avatar_url=client.storage.from("ibase-avatars").getPublicUrl(path).data.publicUrl;
+      }
+      const saved=await client.from("ibase_profiles").upsert({user_id:currentUser.id,username:username,avatar_url:avatar_url,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+      if(saved.error)throw saved.error;
+      setProfilePreview({username:username,avatar_url:avatar_url});
+      avatarFileEl.value="";setStatus("Ton profil a été enregistré !");
+      openBtn.textContent="@"+username;
+    }catch(err){console.error(err);setStatus("Erreur profil : "+(err.message||"vérifie la configuration SQL et le stockage."));}
+  });
+  if(avatarFileEl)avatarFileEl.addEventListener("change",function(){const f=avatarFileEl.files&&avatarFileEl.files[0];if(f&&f.size<=3*1024*1024){avatarPreview.src=URL.createObjectURL(f);}});
+
+  function formatCommentDate(value){try{return new Intl.DateTimeFormat("fr-FR",{dateStyle:"short",timeStyle:"short"}).format(new Date(value));}catch(e){return "";}}
+  async function loadGroupComments(panel){
+    if(!client||!panel)return;
+    const groupName=panel.getAttribute("data-community-group");
+    const list=panel.querySelector("[data-comment-list]");
+    if(!list)return;
+    const r=await client.from("ibase_comments").select("id,user_id,content,created_at").eq("group_name",groupName).order("created_at",{ascending:false}).limit(100);
+    if(r.error){list.innerHTML="<div class='ibase-community-empty'>Impossible de charger les commentaires. Vérifie le SQL Supabase.</div>";console.warn(r.error);return;}
+    const ids=[...new Set((r.data||[]).map(x=>x.user_id))];
+    let profiles={};
+    if(ids.length){const pr=await client.from("ibase_profiles").select("user_id,username,avatar_url").in("user_id",ids);if(!pr.error)(pr.data||[]).forEach(x=>profiles[x.user_id]=x);}
+    list.innerHTML=(r.data||[]).map(c=>{
+      const pr=profiles[c.user_id]||{};const username=pr.username||"Membre IBASE";const avatar=pr.avatar_url||fallbackAvatar;
+      return "<article class='ibase-comment'><img src='"+esc(avatar)+"' alt=''><div class='ibase-comment-body'><div class='ibase-comment-meta'><strong>"+esc(username)+"</strong> · "+esc(formatCommentDate(c.created_at))+"</div><div class='ibase-comment-text'>"+esc(c.content)+"</div>"+(currentUser&&currentUser.id===c.user_id?"<button class='ibase-comment-delete' type='button' data-comment-delete='"+esc(c.id)+"'>Supprimer</button>":"")+"</div></article>";
+    }).join("")||"<div class='ibase-community-empty'>Aucun commentaire pour le moment. Lance la discussion !</div>";
+    const status=panel.querySelector("[data-comment-status]");
+    if(status)status.textContent=currentUser?"":"Connecte-toi pour publier un commentaire.";
+  }
+  async function refreshVisibleComments(){document.querySelectorAll("[data-community-group]").forEach(loadGroupComments);}
+  document.addEventListener("click",async function(event){
+    const submit=event.target.closest("[data-comment-submit]");
+    const del=event.target.closest("[data-comment-delete]");
+    if(submit){
+      const panel=submit.closest("[data-community-group]"),input=panel&&panel.querySelector("[data-comment-input]"),status=panel&&panel.querySelector("[data-comment-status]"),content=(input&&input.value||"").trim();
+      if(!client||!currentUser){openAuth("Connecte-toi pour commenter les groupes.");return;}
+      if(!content){if(status)status.textContent="Écris un commentaire avant de publier.";return;}
+      submit.disabled=true;if(status)status.textContent="Publication…";
+      const result=await client.from("ibase_comments").insert({user_id:currentUser.id,group_name:panel.getAttribute("data-community-group"),content:content});
+      submit.disabled=false;
+      if(result.error){if(status)status.textContent="Erreur : "+result.error.message;return;}
+      input.value="";if(status)status.textContent="Commentaire publié !";await loadGroupComments(panel);
+    }
+    if(del){
+      if(!client||!currentUser)return;
+      const panel=del.closest("[data-community-group]");
+      const result=await client.from("ibase_comments").delete().eq("id",del.getAttribute("data-comment-delete")).eq("user_id",currentUser.id);
+      if(result.error){console.warn(result.error);return;}await loadGroupComments(panel);
+    }
+  });
+  const communityObserver=new MutationObserver(function(){document.querySelectorAll("[data-community-group]:not([data-community-loaded])").forEach(function(panel){panel.setAttribute("data-community-loaded","1");loadGroupComments(panel);});});
+  communityObserver.observe(document.getElementById("resultText")||document.body,{childList:true,subtree:true});
+
   // Explicitly pin the two newest group entries requested, rather than relying on array tail order.
   window.renderGroupGrid = function(){
     const grid=document.getElementById("groupGrid");
@@ -9716,15 +9831,18 @@ document.head.appendChild(style);
       currentUser=r.data&&r.data.session?r.data.session.user:null;
       openBtn.textContent=currentUser?"Mon compte":"Connexion";
       await refreshVotes();
+      if(currentUser)await loadProfile();
     });
     client.auth.onAuthStateChange(function(_event,session){
       currentUser=session?session.user:null;
       openBtn.textContent=currentUser?"Mon compte":"Connexion";
+      if(currentUser)loadProfile();else setProfilePreview({});
       refreshVotes().then(function(){
         if(document.querySelector(".profile-page")&&typeof currentGroupIdx!=="undefined"&&currentGroupIdx>=0){
           const g=groupsData[currentGroupIdx], y=window.scrollY;
           if(g){resultText.innerHTML=renderGroupPage(g,currentGroupIdx);window.scrollTo(0,y);}
         }
+        refreshVisibleComments();
       });
     });
   }else{
