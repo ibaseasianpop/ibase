@@ -1314,6 +1314,32 @@ body { position:relative; }
   .ibase-halloween-spider,.ibase-halloween-corner,.ibase-spooky-flyer{animation-duration:.01ms!important}
 }
 </style>
+
+<style id="ibase-auth-voting-styles">
+.ibase-account-trigger{border:0;border-radius:999px;padding:11px 18px;background:var(--pink);color:#fff;font-weight:800;cursor:pointer;white-space:nowrap}
+.ibase-account-trigger:hover{background:#ed4e91}
+.ibase-auth-backdrop{position:fixed;inset:0;z-index:100000;background:rgba(30,15,25,.38);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px}
+.ibase-auth-backdrop.open{display:flex}
+.ibase-auth-card{width:min(440px,100%);max-height:90vh;overflow:auto;padding:26px;border-radius:28px;background:rgba(255,255,255,.94);border:1px solid #fff;box-shadow:0 24px 80px rgba(0,0,0,.2)}
+.ibase-auth-card h2{color:var(--pink);font-size:25px;margin:0 0 8px}
+.ibase-auth-card p{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 16px}
+.ibase-auth-card label{display:block;font-size:12px;font-weight:800;color:#555;margin:13px 0 6px}
+.ibase-auth-card input{width:100%;border:1px solid #f3c4d8;border-radius:13px;padding:13px 14px;font-size:15px;background:#fff;outline:none}
+.ibase-auth-card input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,105,168,.12)}
+.ibase-auth-actions{display:flex;gap:9px;margin-top:17px}
+.ibase-auth-actions button,.ibase-auth-close{border:0;border-radius:999px;padding:12px 16px;font-weight:800;cursor:pointer}
+.ibase-auth-actions button{flex:1;background:var(--pink);color:#fff}
+.ibase-auth-actions button.secondary{background:var(--pink-light);color:#b5316d}
+.ibase-auth-close{float:right;background:#f5f5f5;color:#555}
+.ibase-auth-status{min-height:20px;margin-top:12px!important;color:#b5316d!important;font-weight:700}
+.ibase-vote-control{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:3px;padding:4px 6px;border:1px solid var(--pink-light);border-radius:14px;background:#fff;z-index:4}
+.ibase-vote-control button{width:27px;height:30px;border:0;border-radius:9px;background:transparent;color:var(--pink);font-size:17px;font-weight:900;line-height:1;cursor:pointer}
+.ibase-vote-control button.active{background:var(--pink);color:#fff}
+.ibase-vote-control .ibase-vote-count{min-width:20px;text-align:center;font-size:12px;font-weight:900;color:#333;font-variant-numeric:tabular-nums}
+.member-row{padding-right:112px}
+@media(max-width:750px){header{gap:10px}.ibase-account-trigger{font-size:12px;padding:9px 13px}.ibase-vote-control{right:7px;gap:0;padding:3px}.ibase-vote-control button{width:25px}}
+</style>
+
 </head>
 
 <body>
@@ -1330,7 +1356,32 @@ body { position:relative; }
         <a href="#about">About</a>
         <a href="#creator" id="creatorLink">Réseaux</a>
     </nav>
+    <button type="button" class="ibase-account-trigger" id="ibaseAccountOpen">Connexion</button>
 </header>
+
+
+<div class="ibase-auth-backdrop" id="ibaseAuthBackdrop" aria-hidden="true">
+  <div class="ibase-auth-card" role="dialog" aria-modal="true" aria-labelledby="ibaseAuthTitle">
+    <button type="button" class="ibase-auth-close" id="ibaseAuthClose">Fermer ✕</button>
+    <h2 id="ibaseAuthTitle">Compte IBASE</h2>
+    <p id="ibaseAuthIntro">Connecte-toi pour voter pour tes bias. Ton compte restera connecté sur cet appareil.</p>
+    <div id="ibaseAuthForm">
+      <label for="ibaseAuthEmail">Adresse e-mail (identifiant)</label>
+      <input id="ibaseAuthEmail" type="email" autocomplete="username" placeholder="ton@email.com">
+      <label for="ibaseAuthPassword">Mot de passe</label>
+      <input id="ibaseAuthPassword" type="password" autocomplete="current-password" placeholder="Au moins 6 caractères">
+      <div class="ibase-auth-actions">
+        <button type="button" id="ibaseLoginBtn">Se connecter</button>
+        <button type="button" class="secondary" id="ibaseSignupBtn">Créer un compte</button>
+      </div>
+    </div>
+    <div id="ibaseLoggedPanel" style="display:none">
+      <p id="ibaseLoggedEmail"></p>
+      <div class="ibase-auth-actions"><button type="button" class="secondary" id="ibaseLogoutBtn">Se déconnecter</button></div>
+    </div>
+    <p class="ibase-auth-status" id="ibaseAuthStatus" role="status"></p>
+  </div>
+</div>
 
 <main>
 
@@ -9473,6 +9524,213 @@ document.head.appendChild(style);
     },true);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
+
+<!-- IBASE: real accounts and shared bias voting.
+     Configure SUPABASE_URL and SUPABASE_ANON_KEY below after creating a Supabase project.
+     Never put a service_role key in a public GitHub Pages site. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  "use strict";
+
+  const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+  const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+  const configured = SUPABASE_URL.startsWith("https://") &&
+    !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
+
+  const backdrop = document.getElementById("ibaseAuthBackdrop");
+  const openBtn = document.getElementById("ibaseAccountOpen");
+  const closeBtn = document.getElementById("ibaseAuthClose");
+  const statusEl = document.getElementById("ibaseAuthStatus");
+  const formEl = document.getElementById("ibaseAuthForm");
+  const loggedPanel = document.getElementById("ibaseLoggedPanel");
+  const loggedEmail = document.getElementById("ibaseLoggedEmail");
+  const intro = document.getElementById("ibaseAuthIntro");
+  const emailEl = document.getElementById("ibaseAuthEmail");
+  const passwordEl = document.getElementById("ibaseAuthPassword");
+
+  let client = null;
+  let currentUser = null;
+  let voteCounts = Object.create(null);
+  let myVotes = Object.create(null);
+  let voteBusy = false;
+
+  function openAuth(message){
+    backdrop.classList.add("open");
+    backdrop.setAttribute("aria-hidden","false");
+    statusEl.textContent = message || "";
+    if(currentUser){
+      formEl.style.display = "none";
+      loggedPanel.style.display = "block";
+      loggedEmail.textContent = "Connecté avec : " + currentUser.email;
+      intro.textContent = "Ton compte IBASE est connecté. Tu peux voter pour les membres.";
+    }else{
+      formEl.style.display = "block";
+      loggedPanel.style.display = "none";
+      intro.textContent = configured
+        ? "Connecte-toi ou crée un compte pour voter. Ta session restera active sur cet appareil."
+        : "Le système de compte doit encore être relié à ton projet Supabase. Les votes ne seront activés qu'après cette configuration.";
+    }
+  }
+  function closeAuth(){
+    backdrop.classList.remove("open");
+    backdrop.setAttribute("aria-hidden","true");
+  }
+  openBtn.addEventListener("click",function(){openAuth();});
+  closeBtn.addEventListener("click",closeAuth);
+  backdrop.addEventListener("click",function(e){if(e.target===backdrop)closeAuth();});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeAuth();});
+
+  function setStatus(message){statusEl.textContent=message||"";}
+  function voteKey(group,member){return group+"::"+member;}
+  function esc(v){return String(v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+
+  async function refreshVotes(){
+    if(!client){return;}
+    const all = await client.from("bias_votes").select("group_name,member_name,value");
+    if(all.error){console.error("IBASE votes:",all.error);return;}
+    voteCounts = Object.create(null);
+    (all.data||[]).forEach(function(v){
+      const k=voteKey(v.group_name,v.member_name);
+      voteCounts[k]=(voteCounts[k]||0)+Number(v.value||0);
+    });
+    myVotes = Object.create(null);
+    if(currentUser){
+      const mine=await client.from("bias_votes").select("group_name,member_name,value").eq("user_id",currentUser.id);
+      if(mine.error){console.error("IBASE own votes:",mine.error);}
+      else (mine.data||[]).forEach(function(v){myVotes[voteKey(v.group_name,v.member_name)]=Number(v.value);});
+    }
+  }
+  function score(group,member){return Number(voteCounts[voteKey(group.name,member.name)]||0);}
+  function biasButton(group,member){
+    const k=voteKey(group.name,member.name), mine=myVotes[k]||0, n=score(group,member);
+    return "<div class='ibase-vote-control' aria-label='Votes pour "+esc(member.name)+"'>"+
+      "<button type='button' data-bias-direction='1' class='"+(mine===1?"active":"")+"' aria-label='Voter pour "+esc(member.name)+"' title='Voter pour'>▲</button>"+
+      "<span class='ibase-vote-count'>"+n+"</span>"+
+      "<button type='button' data-bias-direction='-1' class='"+(mine===-1?"active":"")+"' aria-label='Voter contre "+esc(member.name)+"' title='Voter contre'>▼</button>"+
+      "</div>";
+  }
+
+  // Override the original local-only vote helpers. Counts are shared by all visitors.
+  window.biasScore = score;
+  window.biasVoteButton = biasButton;
+  window.sortedMemberEntries = function(group){
+    return group.members.map(function(m,i){return {m:m,i:i};})
+      .sort(function(a,b){return score(group,b.m)-score(group,a.m)||a.i-b.i;});
+  };
+
+  async function submitVote(group,member,direction){
+    if(!client){openAuth("Les votes nécessitent la configuration Supabase dans ce fichier.");return;}
+    if(!currentUser){openAuth("Connecte-toi pour voter pour ton bias.");return;}
+    if(voteBusy)return;
+    voteBusy=true;
+    try{
+      const key=voteKey(group.name,member.name), previous=myVotes[key]||0;
+      let result;
+      if(previous===direction){
+        result=await client.from("bias_votes").delete()
+          .eq("user_id",currentUser.id).eq("group_name",group.name).eq("member_name",member.name);
+      }else{
+        result=await client.from("bias_votes").upsert({
+          user_id:currentUser.id,group_name:group.name,member_name:member.name,value:direction
+        },{onConflict:"user_id,group_name,member_name"});
+      }
+      if(result.error)throw result.error;
+      await refreshVotes();
+      const gi=groupsData.indexOf(group), y=window.scrollY;
+      resultText.innerHTML=renderGroupPage(group,gi);
+      window.scrollTo(0,y);
+    }catch(err){
+      console.error(err);
+      openAuth("Impossible d'enregistrer le vote : "+(err.message||"erreur inconnue"));
+    }finally{voteBusy=false;}
+  }
+
+  // Capture the click before the old localStorage-only handler can run.
+  document.addEventListener("click",function(event){
+    const button=event.target.closest("[data-bias-direction]");
+    if(!button)return;
+    const row=button.closest(".member-row");
+    if(!row)return;
+    event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
+    const group=groupsData[Number(row.dataset.group)];
+    const member=group&&group.members[Number(row.dataset.member)];
+    if(group&&member)submitVote(group,member,Number(button.dataset.biasDirection));
+  },true);
+
+  async function authAction(mode){
+    if(!client){setStatus("Configuration nécessaire : ajoute l'URL et la clé publique Supabase dans le code.");return;}
+    const email=emailEl.value.trim(), password=passwordEl.value;
+    if(!email||!password){setStatus("Entre ton adresse e-mail et ton mot de passe.");return;}
+    if(password.length<6){setStatus("Le mot de passe doit contenir au moins 6 caractères.");return;}
+    setStatus(mode==="signup"?"Création du compte…":"Connexion…");
+    const result=mode==="signup"
+      ? await client.auth.signUp({email,password})
+      : await client.auth.signInWithPassword({email,password});
+    if(result.error){setStatus(result.error.message);return;}
+    if(mode==="signup"&&!result.data.session){
+      setStatus("Compte créé ! Vérifie ton e-mail pour confirmer l'inscription, puis connecte-toi.");
+    }else{
+      setStatus("Connexion réussie !");
+      closeAuth();
+    }
+  }
+  document.getElementById("ibaseLoginBtn").addEventListener("click",function(){authAction("login");});
+  document.getElementById("ibaseSignupBtn").addEventListener("click",function(){authAction("signup");});
+  document.getElementById("ibaseLogoutBtn").addEventListener("click",async function(){
+    if(!client)return;
+    const r=await client.auth.signOut();
+    if(r.error){setStatus(r.error.message);return;}
+    setStatus("Déconnecté.");
+  });
+
+  // Explicitly pin the two newest group entries requested, rather than relying on array tail order.
+  window.renderGroupGrid = function(){
+    const grid=document.getElementById("groupGrid");
+    if(!grid)return;
+    const wanted=["Red Velvet","Aooo"];
+    const selected=wanted.map(function(name){return groupsData.find(function(g){return g.name===name;});}).filter(Boolean);
+    grid.innerHTML=selected.map(function(group){
+      const index=groupsData.indexOf(group);
+      return "<article class='group-banner' data-open-group='"+index+"'>"+
+        "<img class='group-bg' src='"+group.bannerImg+"' alt='"+esc(group.name)+"'>"+
+        "<div class='group-overlay'></div>"+
+        (typeof isFavGroup==="function"&&isFavGroup(group)?"<span class='fav-star banner-star'>★</span>":"")+
+        (group.logoImg?"<div class='hero-logo-badge'"+(group.logoBg?" style='background:"+group.logoBg+"'":"")+"><img src='"+group.logoImg+"' alt='"+esc(group.name)+" logo'></div>":"")+
+        "<div class='group-content'><div class='group-badge'>"+group.subcategories.join(" · ").toUpperCase()+" · "+group.category+"</div>"+
+        (group.logoImg?"":"<h2 style='color:white'>"+esc(group.name)+"</h2>")+
+        "<div class='group-members-row'>"+group.members.map(function(m){return "<span>"+esc(m.name)+(typeof statusBadge==="function"?statusBadge(m):"")+"</span>";}).join("")+"</div></div></article>";
+    }).join("");
+  };
+  window.renderGroupGrid();
+
+  if(configured && window.supabase && window.supabase.createClient){
+    client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{
+      auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
+    });
+    window.ibaseSupabase=client;
+    client.auth.getSession().then(async function(r){
+      currentUser=r.data&&r.data.session?r.data.session.user:null;
+      openBtn.textContent=currentUser?"Mon compte":"Connexion";
+      await refreshVotes();
+    });
+    client.auth.onAuthStateChange(function(_event,session){
+      currentUser=session?session.user:null;
+      openBtn.textContent=currentUser?"Mon compte":"Connexion";
+      refreshVotes().then(function(){
+        if(document.querySelector(".profile-page")&&typeof currentGroupIdx!=="undefined"&&currentGroupIdx>=0){
+          const g=groupsData[currentGroupIdx], y=window.scrollY;
+          if(g){resultText.innerHTML=renderGroupPage(g,currentGroupIdx);window.scrollTo(0,y);}
+        }
+      });
+    });
+  }else{
+    openBtn.textContent="Connexion";
+    console.warn("IBASE: configure SUPABASE_URL et SUPABASE_ANON_KEY pour activer les comptes et les votes partagés.");
+  }
 })();
 </script>
 
